@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:path/path.dart' as p;
 
 /// Obfuscates a box name by creating a deterministic hash of it.
 ///
@@ -32,8 +33,10 @@ extension ObfuscationUtils on File {
   /// Throws [ArgumentError] if [boxName] is empty.
   File obfuscate(bool obfuscate) => obfuscate
       ? File(
-          '${uri.pathSegments.sublist(0, uri.pathSegments.length - 1).join('/')}/'
-          '${sha256.convert(utf8.encode(uri.pathSegments.last))}',
+          p.join(
+            p.dirname(path),
+            '${sha256.convert(utf8.encode(p.basename(path)))}',
+          ),
         )
       : this;
 }
