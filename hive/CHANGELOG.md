@@ -1,3 +1,27 @@
+## 2.19.1
+
+- Updates `isolate_channel` to `0.4.0`
+
+## 2.19.0
+
+- Adds box search to the inspector (by [@ElNgatia](https://github.com/ElNgatia) in [#280](https://github.com/IO-Design-Team/hive_ce/pull/280))
+
+## 2.18.0
+
+- Fixes an issue with IsolatedHive encryption
+- Automatically disables the unsafe isolate warning when running in a test
+
+## 2.17.0
+
+- Fixes WASM int decoding (by [@flrnsbt](https://github.com/flrnsbt) in [#262](https://github.com/IO-Design-Team/hive_ce/pull/262))
+- Adds nested primitive support to `CollectionBox`
+- Adds more options to the logger to ignore specific warnings
+
+## 2.16.0
+
+- Implements a proper logging system
+- Adds `hive_ce.dart` to make the publish action happy
+
 ## 2.15.1
 
 - Moves most of the documentation to the new [documentation site](https://docs.hive.isar.community)

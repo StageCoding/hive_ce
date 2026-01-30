@@ -1,10 +1,5 @@
-import 'package:example/freezed.dart';
 import 'package:example/main.dart';
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 
-@GenerateAdapters([
-  AdapterSpec<Person>(),
-  AdapterSpec<Job>(),
-  AdapterSpec<FreezedPerson>(),
-])
+@GenerateAdapters([AdapterSpec<Person>(), AdapterSpec<Job>()])
 part 'hive_adapters.g.dart';

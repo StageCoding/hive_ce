@@ -4,7 +4,7 @@ library;
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:hive_ce/src/backend/vm/read_write_sync.dart';
 import 'package:hive_ce/src/backend/vm/storage_backend_vm.dart';
 import 'package:hive_ce/src/binary/binary_writer_impl.dart';
@@ -40,6 +40,7 @@ StorageBackendVm _getBackend({
   File? lockFile,
   bool crashRecovery = false,
   HiveCipher? cipher,
+  int? keyCrc,
   FrameIoHelper? ioHelper,
   ReadWriteSync? sync,
   RandomAccessFile? readRaf,
@@ -50,6 +51,7 @@ StorageBackendVm _getBackend({
     lockFile ?? MockFile(),
     crashRecovery,
     cipher,
+    keyCrc,
     ioHelper ?? MockFrameIoHelper(),
     sync ?? ReadWriteSync(),
   );
@@ -71,7 +73,7 @@ void main() {
   group('StorageBackendVm', () {
     test('.path returns path for of open box file', () {
       // This is a test
-      // ignore: do_not_use_raw_paths
+      // ignore: rexios_lints/do_not_use_raw_paths
       final file = File('some/path');
       final backend = _getBackend(file: file);
       expect(backend.path, 'some/path');
@@ -129,10 +131,12 @@ void main() {
             any(),
             any(),
             any(),
+            any(),
           ),
         ).thenAnswer((i) => Future.value(recoveryOffset));
         when(
           () => helper.keysFromFile(
+            any(),
             any(),
             any(),
             any(),

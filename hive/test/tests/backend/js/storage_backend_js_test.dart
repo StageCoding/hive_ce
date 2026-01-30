@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:js_interop';
 import 'dart:typed_data';
 
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:hive_ce/src/backend/js/native/storage_backend_js.dart';
 import 'package:hive_ce/src/backend/js/native/utils.dart';
 import 'package:hive_ce/src/binary/binary_writer_impl.dart';
@@ -60,8 +60,8 @@ void main() async {
     group('.encodeValue()', () {
       test('primitive', () {
         final values = [
-          null, 11, 17.25, true, 'hello', //
-          [11, 12, 13], [17.25, 17.26], [true, false], ['str1', 'str2'], //
+          null, 17.25, true, 'hello', //
+          [17.25, 17.26], [true, false], ['str1', 'str2'], //
         ];
         final backend = _getBackend();
         for (final value in values) {
@@ -117,31 +117,6 @@ void main() async {
           expect(encoded, [0x90, 0xA9, ...writer.toBytes()]);
         });
       });
-
-      group('int', () {
-        void expectWarning(Object obj) {
-          var output = '';
-          runZoned(
-            () => _getBackend().encodeValue(Frame('key', obj)),
-            zoneSpecification: ZoneSpecification(
-              print: (_, __, ___, line) => output += line,
-            ),
-          );
-
-          if (StorageBackendJs.isWasm) {
-            expect(output, StorageBackendJs.wasmIntWarning);
-          } else {
-            expect(output, isEmpty);
-          }
-        }
-
-        test('prints warning for `int` type', () => expectWarning(11));
-
-        test(
-          'prints warning for `List<int>` type',
-          () => expectWarning([11, 12, 13]),
-        );
-      });
     });
 
     group('.decodeValue()', () {
@@ -178,6 +153,12 @@ void main() async {
           final bytes = backend.encodeValue(testFrame);
           final value = backend.decodeValue(bytes);
           expect(value, testFrame.value);
+
+          // Ensure int and List<int> are not decoded as doubles
+          if (testFrame.value is! Uint8List &&
+              (testFrame.value is int || testFrame.value is List<int>)) {
+            expect(value.runtimeType, testFrame.value.runtimeType);
+          }
         }
       });
     });
